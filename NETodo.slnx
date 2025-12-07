@@ -1,1 +1,3 @@
-<Solution />
+<Solution>
+  <Project Path="src/TodoApp.WPF/TodoApp.WPF.csproj" />
+</Solution>
