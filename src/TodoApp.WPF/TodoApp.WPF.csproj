@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <Folder Include="Core\Entities\" />
-    <Folder Include="Core\Enums\" />
     <Folder Include="Core\Interfaces\" />
     <Folder Include="Infrastructure\Data\" />
     <Folder Include="Infrastructure\Repositories\" />
