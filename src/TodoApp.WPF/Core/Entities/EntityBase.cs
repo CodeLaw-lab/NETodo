@@ -1,53 +1,36 @@
 ﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace TodoApp.WPF.Core.Entities;
 
 public abstract class EntityBase : INotifyPropertyChanged
 {
    private int _id;
-   [Key]
+   private DateTime _createdAt = DateTime.UtcNow;
+   private DateTime _modifiedAt = DateTime.UtcNow;
+   private bool _isDeleted;
+
    public int Id
    {
       get => _id;
-      set
-      {
-         _id = value;
-         OnPropertyChanged(nameof(Id));
-      }
+      set => SetField(ref _id, value, nameof(Id));
    }
 
-   private DateTime _createdAt = DateTime.UtcNow;
    public DateTime CreatedAt
    {
       get => _createdAt;
-      set
-      {
-         _createdAt = value;
-         OnPropertyChanged(nameof(CreatedAt));
-      }
+      set => SetField(ref _createdAt, value, nameof(CreatedAt));
    }
 
-   private DateTime _modifiedAt = DateTime.UtcNow;
    public DateTime ModifiedAt
    {
       get => _modifiedAt;
-      set
-      {
-         _modifiedAt = value;
-         OnPropertyChanged(nameof(ModifiedAt));
-      }
+      set => SetField(ref _modifiedAt, value, nameof(ModifiedAt));
    }
 
-   private bool _isDeleted;
    public bool IsDeleted
    {
       get => _isDeleted;
-      set
-      {
-         _isDeleted = value;
-         OnPropertyChanged(nameof(IsDeleted));
-      }
+      set => SetField(ref _isDeleted, value, nameof(IsDeleted));
    }
 
    public event PropertyChangedEventHandler? PropertyChanged;
@@ -57,9 +40,11 @@ public abstract class EntityBase : INotifyPropertyChanged
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
    }
 
-   protected EntityBase()
+   protected bool SetField<T>(ref T field, T value, string propertyName)
    {
-      CreatedAt = DateTime.UtcNow;
-      ModifiedAt = DateTime.UtcNow;
+      if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+      field = value;
+      OnPropertyChanged(propertyName);
+      return true;
    }
 }
