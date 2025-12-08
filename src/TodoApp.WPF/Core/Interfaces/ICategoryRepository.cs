@@ -2,6 +2,6 @@
 
 namespace TodoApp.WPF.Core.Interfaces;
 
-internal interface ICategoryRepository : IRepository<Category>
+public interface ICategoryRepository : IRepository<Category>
 {
 }

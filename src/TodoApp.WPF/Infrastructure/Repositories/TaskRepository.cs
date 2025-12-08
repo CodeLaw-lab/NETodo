@@ -14,7 +14,8 @@ public class TaskRepository : Repository<TodoTask>, ITaskRepository
    public async Task<IEnumerable<TodoTask>> GetTasksByCategoryAsync(int categoryId)
    {
       return await _context.Tasks
-         .Where(t => t.CategoryId == categoryId)
+         .Include(t => t.Category)
+         .Where(t => t.CategoryId == categoryId && !t.IsDeleted)
          .ToListAsync();
    }
 
@@ -31,5 +32,14 @@ public class TaskRepository : Repository<TodoTask>, ITaskRepository
       return await _context.Tasks
          .Include(t => t.Category)
          .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
+   }
+
+   public new async Task<IEnumerable<TodoTask>> FindAsync(System.Linq.Expressions.Expression<Func<TodoTask, bool>> predicate)
+   {
+      return await _context.Tasks
+         .Include(t => t.Category)
+         .Where(t => !t.IsDeleted)
+         .Where(predicate)
+         .ToListAsync();
    }
 }

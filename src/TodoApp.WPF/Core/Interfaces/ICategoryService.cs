@@ -9,4 +9,8 @@ public interface ICategoryService
    Task<Category> CreateCategoryAsync(Category category);
    Task UpdateCategoryAsync(Category category);
    Task DeleteCategoryAsync(int id);
+
+   // Дополнительные методы
+   Task<Category?> GetCategoryByNameAsync(string name);
+   Task<bool> CategoryHasTasksAsync(int categoryId);
 }
