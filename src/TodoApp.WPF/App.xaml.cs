@@ -1,13 +1,16 @@
-﻿using System.IO;
-using System.Windows;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+using System.IO;
+using System.Windows;
+
 using TodoApp.WPF.Core.Interfaces;
 using TodoApp.WPF.Infrastructure.Data;
 using TodoApp.WPF.Infrastructure.Repositories;
 using TodoApp.WPF.Services;
+using TodoApp.WPF.ViewModels;
 
 namespace TodoApp.WPF;
 
@@ -46,6 +49,9 @@ public partial class App : Application
       // Регистрация сервисов
       services.AddScoped<ITaskService, TaskService>();
       services.AddScoped<ICategoryService, CategoryService>();
+
+      // Регистрация ViewModels
+      services.AddSingleton<MainViewModel>();
 
       // Регистрация MainWindow
       services.AddSingleton<MainWindow>();
