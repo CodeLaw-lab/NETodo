@@ -143,4 +143,22 @@ public class TaskService : ITaskService
    {
       return await _taskRepository.FindAsync(t => !t.IsCompleted);
    }
+
+   public async Task<(IEnumerable<TodoTask> Task, int TotalCount)> GetTasksWithPaginationAsync(
+      int pageNumber,
+      int pageSize,
+      Func<TodoTask, bool>? filter = null)
+   {
+      var allTasks = await GetAllTasksAsync();
+
+      if (filter != null)
+         allTasks = allTasks.Where(filter);
+
+      var totalCount = allTasks.Count();
+      var tasks = allTasks
+         .Skip((pageNumber - 1) * pageSize)
+         .Take(pageSize);
+
+      return (tasks, totalCount);
+   }
 }
