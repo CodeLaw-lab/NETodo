@@ -1,13 +1,12 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Input;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Collections.ObjectModel;
+using System.Windows;
 using TodoApp.WPF.Core.Entities;
 using TodoApp.WPF.Core.Enums;
 using TodoApp.WPF.Core.Interfaces;
 
-namespace TodoApp.WPF.ViewModels;
+namespace TodoApp.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
@@ -58,6 +57,7 @@ public partial class MainViewModel : ViewModelBase
       {
          if (SetProperty(ref _selectedTask, value))
          {
+            // Обновляем состояние команд
             EditTaskCommand.NotifyCanExecuteChanged();
             DeleteTaskCommand.NotifyCanExecuteChanged();
             ToggleTaskCompletionCommand.NotifyCanExecuteChanged();
@@ -113,15 +113,15 @@ public partial class MainViewModel : ViewModelBase
       }
    }
 
-   // Команды
-   public ICommand LoadDataCommand { get; }
-   public ICommand AddTaskCommand { get; }
-   public ICommand EditTaskCommand { get; }
-   public ICommand DeleteTaskCommand { get; }
-   public ICommand ToggleTaskCompletionCommand { get; }
-   public ICommand ManageCategoriesCommand { get; }
-   public ICommand ClearFiltersCommand { get; }
-   public ICommand RefreshCommand { get; }
+   // Команды - используем конкретные типы для доступа к NotifyCanExecuteChanged
+   public IAsyncRelayCommand LoadDataCommand { get; }
+   public IAsyncRelayCommand AddTaskCommand { get; }
+   public IAsyncRelayCommand EditTaskCommand { get; }
+   public IAsyncRelayCommand DeleteTaskCommand { get; }
+   public IAsyncRelayCommand ToggleTaskCompletionCommand { get; }
+   public IAsyncRelayCommand ManageCategoriesCommand { get; }
+   public IRelayCommand ClearFiltersCommand { get; }
+   public IAsyncRelayCommand RefreshCommand { get; }
 
    // Статистика
    [ObservableProperty]
@@ -167,8 +167,7 @@ public partial class MainViewModel : ViewModelBase
    {
       // TODO: Реализовать диалог добавления задачи
       await Task.Delay(100);
-      MessageBox.Show("Функция добавления задачи будет реализована позже", "В разработке",
-         MessageBoxButton.OK, MessageBoxImage.Information);
+      ShowMessage("Функция добавления задачи будет реализована позже", "В разработке");
    }
 
    private bool CanEditTask() => SelectedTask != null;
@@ -179,8 +178,7 @@ public partial class MainViewModel : ViewModelBase
 
       // TODO: Реализовать диалог редактирования задачи
       await Task.Delay(100);
-      MessageBox.Show($"Редактирование задачи: {SelectedTask.Title}", "В разработке",
-         MessageBoxButton.OK, MessageBoxImage.Information);
+      ShowMessage($"Редактирование задачи: {SelectedTask.Title}", "В разработке");
    }
 
    private bool CanDeleteTask() => SelectedTask != null;
@@ -189,11 +187,9 @@ public partial class MainViewModel : ViewModelBase
    {
       if (SelectedTask == null) return;
 
-      var result = MessageBox.Show(
+      var result = ShowConfirmation(
          $"Вы уверены, что хотите удалить задачу \"{SelectedTask.Title}\"?",
-         "Подтверждение удаления",
-         MessageBoxButton.YesNo,
-         MessageBoxImage.Question);
+         "Подтверждение удаления");
 
       if (result == MessageBoxResult.Yes)
       {
@@ -234,8 +230,7 @@ public partial class MainViewModel : ViewModelBase
    {
       // TODO: Реализовать диалог управления категориями
       await Task.Delay(100);
-      MessageBox.Show("Управление категориями будет реализовано позже", "В разработке",
-         MessageBoxButton.OK, MessageBoxImage.Information);
+      ShowMessage("Управление категориями будет реализовано позже", "В разработке");
    }
 
    private void ClearFilters()
@@ -266,5 +261,22 @@ public partial class MainViewModel : ViewModelBase
       CompletedTasks = allTasks.Count(t => t.IsCompleted);
       PendingTasks = allTasks.Count(t => !t.IsCompleted);
       OverdueTasks = allTasks.Count(t => !t.IsCompleted && t.IsOverdue());
+   }
+
+   private void ShowMessage(string message, string caption)
+   {
+      System.Windows.Application.Current.Dispatcher.Invoke(() =>
+      {
+         MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Information);
+      });
+   }
+
+   private MessageBoxResult ShowMessageBox(string message, string caption,
+      MessageBoxButton buttons, MessageBoxImage icon)
+   {
+      return System.Windows.Application.Current.Dispatcher.Invoke(() =>
+      {
+         return MessageBox.Show(message, caption, buttons, icon);
+      });
    }
 }

@@ -5,12 +5,11 @@ using Microsoft.Extensions.Hosting;
 
 using System.IO;
 using System.Windows;
-
+using TodoApp.ViewModels;
 using TodoApp.WPF.Core.Interfaces;
 using TodoApp.WPF.Infrastructure.Data;
 using TodoApp.WPF.Infrastructure.Repositories;
 using TodoApp.WPF.Services;
-using TodoApp.WPF.ViewModels;
 
 namespace TodoApp.WPF;
 

@@ -1,7 +1,7 @@
-﻿using System.Windows;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Windows;
 
-namespace TodoApp.WPF.ViewModels;
+namespace TodoApp.ViewModels;
 
 public abstract class ViewModelBase : ObservableObject
 {
@@ -35,18 +35,35 @@ public abstract class ViewModelBase : ObservableObject
          onError?.Invoke(ex);
 
          // Показываем сообщение об ошибке пользователю
-         Application.Current.Dispatcher.Invoke(() =>
-         {
-            MessageBox.Show(
-               $"Произошла ошибка: {ex.Message}",
-               "Ошибка",
-               MessageBoxButton.OK,
-               MessageBoxImage.Error);
-         });
+         ShowErrorMessage(ex.Message, "Ошибка");
       }
       finally
       {
          IsBusy = false;
       }
+   }
+
+   protected void ShowMessage(string message, string caption = "Сообщение")
+   {
+      Application.Current.Dispatcher.Invoke(() =>
+      {
+         MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Information);
+      });
+   }
+
+   protected void ShowErrorMessage(string message, string caption = "Ошибка")
+   {
+      Application.Current.Dispatcher.Invoke(() =>
+      {
+         MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Error);
+      });
+   }
+
+   protected MessageBoxResult ShowConfirmation(string message, string caption = "Подтверждение")
+   {
+      return Application.Current.Dispatcher.Invoke(() =>
+      {
+         return MessageBox.Show(message, caption, MessageBoxButton.YesNo, MessageBoxImage.Question);
+      });
    }
 }
