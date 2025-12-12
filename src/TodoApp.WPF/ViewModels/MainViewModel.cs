@@ -1,17 +1,18 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using TodoApp.WPF.Core.Entities;
 using TodoApp.WPF.Core.Enums;
 using TodoApp.WPF.Core.Interfaces;
 
-namespace TodoApp.ViewModels;
+namespace TodoApp.WPF.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
    private readonly ITaskService _taskService;
    private readonly ICategoryService _categoryService;
+   private readonly INavigationService _navigationService;
 
    private TodoTask? _selectedTask;
    private Category? _selectedCategory;
@@ -22,10 +23,11 @@ public partial class MainViewModel : ViewModelBase
    [ObservableProperty]
    private string _title = "TodoApp - Менеджер задач";
 
-   public MainViewModel(ITaskService taskService, ICategoryService categoryService)
+   public MainViewModel(ITaskService taskService, ICategoryService categoryService, INavigationService navigationService)
    {
       _taskService = taskService ?? throw new ArgumentNullException(nameof(taskService));
       _categoryService = categoryService ?? throw new ArgumentNullException(nameof(categoryService));
+      _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
 
       LoadDataCommand = new AsyncRelayCommand(LoadDataAsync);
       AddTaskCommand = new AsyncRelayCommand(AddTaskAsync);
@@ -165,9 +167,13 @@ public partial class MainViewModel : ViewModelBase
 
    private async Task AddTaskAsync()
    {
-      // TODO: Реализовать диалог добавления задачи
-      await Task.Delay(100);
-      ShowMessage("Функция добавления задачи будет реализована позже", "В разработке");
+      var result = await _navigationService.ShowTaskEditDialogAsync();
+      if (result == true)
+      {
+         await RefreshAsync();
+         ShowMessage("Задача успешно создана", "Успех");
+      }
+      
    }
 
    private bool CanEditTask() => SelectedTask != null;
@@ -176,9 +182,12 @@ public partial class MainViewModel : ViewModelBase
    {
       if (SelectedTask == null) return;
 
-      // TODO: Реализовать диалог редактирования задачи
-      await Task.Delay(100);
-      ShowMessage($"Редактирование задачи: {SelectedTask.Title}", "В разработке");
+      var result = await _navigationService.ShowTaskEditDialogAsync(SelectedTask.Id);
+      if (result == true)
+      {
+         await RefreshAsync();
+         ShowMessage("Задача успешно обновлена", "Успех");
+      }
    }
 
    private bool CanDeleteTask() => SelectedTask != null;
@@ -228,9 +237,7 @@ public partial class MainViewModel : ViewModelBase
 
    private async Task ManageCategoriesAsync()
    {
-      // TODO: Реализовать диалог управления категориями
-      await Task.Delay(100);
-      ShowMessage("Управление категориями будет реализовано позже", "В разработке");
+      await _navigationService.ShowCategoryManagerDialogAsync();
    }
 
    private void ClearFilters()

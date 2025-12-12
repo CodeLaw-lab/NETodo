@@ -1,7 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System.Windows;
+﻿using System.Windows;
+using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace TodoApp.ViewModels;
+namespace TodoApp.WPF.ViewModels;
 
 public abstract class ViewModelBase : ObservableObject
 {

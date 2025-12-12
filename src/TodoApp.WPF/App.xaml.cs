@@ -2,14 +2,15 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
 using System.IO;
 using System.Windows;
-using TodoApp.ViewModels;
 using TodoApp.WPF.Core.Interfaces;
 using TodoApp.WPF.Infrastructure.Data;
 using TodoApp.WPF.Infrastructure.Repositories;
 using TodoApp.WPF.Services;
+using TodoApp.WPF.ViewModels;
+using TodoApp.WPF.Views;
+using MainViewModel = TodoApp.WPF.ViewModels.MainViewModel;
 
 namespace TodoApp.WPF;
 
@@ -48,12 +49,16 @@ public partial class App : Application
       // Регистрация сервисов
       services.AddScoped<ITaskService, TaskService>();
       services.AddScoped<ICategoryService, CategoryService>();
+      services.AddSingleton<IDialogService, DialogService>();
+      services.AddSingleton<INavigationService, NavigationService>();
 
       // Регистрация ViewModels
       services.AddSingleton<MainViewModel>();
+      services.AddTransient<TaskEditViewModel>();
 
       // Регистрация MainWindow
       services.AddSingleton<MainWindow>();
+      services.AddTransient<TaskEditWindow>();
    }
 
    protected override async void OnStartup(StartupEventArgs e)

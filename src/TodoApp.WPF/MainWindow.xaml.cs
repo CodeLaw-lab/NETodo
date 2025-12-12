@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using TodoApp.ViewModels;
+using MainViewModel = TodoApp.WPF.ViewModels.MainViewModel;
 
 namespace TodoApp.WPF;
 
