@@ -13,6 +13,7 @@
         <converters:PriorityToStringConverter x:Key="PriorityToStringConverter" />
         <converters:StringToBrushConverter x:Key="StringToBrushConverter" />
         <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+        <converters:NullToEditCreateConverter x:Key="NullToEditCreateConverter" />
 
         <!--  Стили  -->
         <Style x:Key="IconButtonStyle" TargetType="Button">

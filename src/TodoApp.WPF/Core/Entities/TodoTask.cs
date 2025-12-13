@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using TodoApp.WPF.Core.Enums;
 
 namespace TodoApp.WPF.Core.Entities;
@@ -8,7 +8,7 @@ public class TodoTask : EntityBase
    private Guid _uuid = Guid.NewGuid();
    private string _title = String.Empty;
    private string? _description;
-   private DateTime? dueDate;
+   private DateTime? _dueDate;
    private Priority _priority = Priority.Medium;
    private bool _isCompleted;
    private DateTime? _completedAt;
@@ -35,8 +35,8 @@ public class TodoTask : EntityBase
 
    public DateTime? DueDate
    {
-      get => dueDate;
-      set => SetField(ref dueDate, value, nameof(DueDate));
+      get => _dueDate;
+      set => SetField(ref _dueDate, value, nameof(DueDate));
    }
 
    public Priority Priority

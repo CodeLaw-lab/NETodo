@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+using System.IO;
+using System.Windows;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.IO;
-using System.Windows;
 using TodoApp.WPF.Core.Interfaces;
 using TodoApp.WPF.Infrastructure.Data;
 using TodoApp.WPF.Infrastructure.Repositories;
@@ -51,19 +51,47 @@ public partial class App : Application
       services.AddScoped<ICategoryService, CategoryService>();
       services.AddSingleton<IDialogService, DialogService>();
       services.AddSingleton<INavigationService, NavigationService>();
+      services.AddSingleton<IConfigurationService, ConfigurationService>();
+      services.AddSingleton<IThemeService, ThemeService>();
+      services.AddSingleton<ILocalizationService, LocalizationService>();
 
       // Регистрация ViewModels
       services.AddSingleton<MainViewModel>();
       services.AddTransient<TaskEditViewModel>();
+      services.AddTransient<CategoryManagerViewModel>();
+      services.AddTransient<SettingsViewModel>();
 
       // Регистрация MainWindow
       services.AddSingleton<MainWindow>();
       services.AddTransient<TaskEditWindow>();
+      services.AddTransient<CategoryManagerWindow>();
+      services.AddTransient<SettingsWindow>();
    }
 
    protected override async void OnStartup(StartupEventArgs e)
    {
       await _host.StartAsync();
+
+      // Загрузка настроек
+      using (var scope = _host.Services.CreateScope())
+      {
+         var configurationService = scope.ServiceProvider.GetRequiredService<IConfigurationService>();
+         await configurationService.LoadAsync();
+
+         // Применяем сохраненные настройки
+         var themeService = scope.ServiceProvider.GetRequiredService<IThemeService>();
+         var localizationService = scope.ServiceProvider.GetRequiredService<ILocalizationService>();
+
+         try
+         {
+            await themeService.SetThemeAsync(configurationService.AppSettings.Theme);
+            await localizationService.SetCultureAsync(localizationService.GetCurrentCulture());
+         }
+         catch (Exception ex)
+         {
+            Console.WriteLine($"Error applying settings: {ex.Message}");
+         }
+      }
 
       // Создание базы данных при запуске
       using (var scope = _host.Services.CreateScope())
@@ -71,8 +99,15 @@ public partial class App : Application
          var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
          await dbContext.Database.EnsureCreatedAsync();
 
-         // Создание тестовых данных для демонстрации
-         await InitializeSampleDataAsync(scope.ServiceProvider);
+         try
+         {
+            // Создание тестовых данных для демонстрации
+            await InitializeSampleDataAsync(scope.ServiceProvider);
+         }
+         catch (Exception ex)
+         {
+            Console.WriteLine($"Error initializing sample data: {ex.Message}");
+         }
       }
 
       var mainWindow = _host.Services.GetRequiredService<MainWindow>();

@@ -35,20 +35,34 @@ public class NavigationService : INavigationService
    {
       await Application.Current.Dispatcher.InvokeAsync(() =>
       {
-         MessageBox.Show("Управление категориями", "В разработке",
-            MessageBoxButton.OK, MessageBoxImage.Information);
+         var viewModel = _serviceProvider.GetService(typeof(CategoryManagerViewModel)) as CategoryManagerViewModel;
+         if (viewModel == null)
+         {
+            MessageBox.Show("Ошибка создания окна управления категориями", "Ошибка",
+               MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+         }
+
+         var window = new CategoryManagerWindow(viewModel);
+         window.ShowDialog();
       });
    }
 
    public async Task<bool?> ShowSettingsDialogAsync()
    {
-      await Application.Current.Dispatcher.InvokeAsync(() =>
+      return await Application.Current.Dispatcher.InvokeAsync(() =>
       {
-         MessageBox.Show("Настройки", "В разработке",
-            MessageBoxButton.OK, MessageBoxImage.Information);
-      });
+         var viewModel = _serviceProvider.GetService(typeof(SettingsViewModel)) as SettingsViewModel;
+         if (viewModel == null)
+         {
+            MessageBox.Show("Ошибка создания окна настроек", "Ошибка",
+               MessageBoxButton.OK, MessageBoxImage.Error);
+            return null;
+         }
 
-      return null;
+         var window = new SettingsWindow(viewModel);
+         return window.ShowDialog();
+      });
    }
 
    public void CloseDialog()

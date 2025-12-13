@@ -1,0 +1,16 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <system:String x:Key="AppTitle">TodoApp - Менеджер задач</system:String>
+    <system:String x:Key="ButtonAdd">Добавить</system:String>
+    <system:String x:Key="ButtonEdit">Изменить</system:String>
+    <system:String x:Key="ButtonDelete">Удалить</system:String>
+    <system:String x:Key="ButtonSave">Сохранить</system:String>
+    <system:String x:Key="ButtonCancel">Отмена</system:String>
+    <system:String x:Key="ButtonClose">Закрыть</system:String>
+    <system:String x:Key="MenuTasks">Задачи</system:String>
+    <system:String x:Key="MenuCategories">Категории</system:String>
+    <system:String x:Key="MenuSettings">Настройки</system:String>
+</ResourceDictionary>

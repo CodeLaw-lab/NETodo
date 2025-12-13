@@ -1,0 +1,68 @@
+﻿<Window
+    x:Class="TodoApp.WPF.Views.SettingsWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="{Binding Title}"
+    Width="400"
+    Height="300"
+    ResizeMode="NoResize"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  Настройки  -->
+        <StackPanel Grid.Row="0">
+            <!--  Тема  -->
+            <TextBlock
+                Margin="0,0,0,5"
+                FontWeight="Bold"
+                Text="Тема:" />
+            <ComboBox
+                Margin="0,0,0,20"
+                ItemsSource="{Binding AvailableThemes}"
+                SelectedItem="{Binding SelectedTheme}" />
+
+            <!--  Язык  -->
+            <TextBlock
+                Margin="0,0,0,5"
+                FontWeight="Bold"
+                Text="Язык:" />
+            <ComboBox
+                Margin="0,0,0,20"
+                DisplayMemberPath="NativeName"
+                ItemsSource="{Binding AvailableCultures}"
+                SelectedItem="{Binding SelectedCulture}" />
+        </StackPanel>
+
+        <!--  Кнопки  -->
+        <Border
+            Grid.Row="1"
+            Padding="0,10,0,0"
+            BorderBrush="LightGray"
+            BorderThickness="0,1,0,0">
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button
+                    MinWidth="80"
+                    Margin="0,0,10,0"
+                    Padding="20,10"
+                    Command="{Binding CancelCommand}"
+                    Content="Отмена" />
+
+                <Button
+                    MinWidth="80"
+                    Padding="20,10"
+                    Background="#007ACC"
+                    Command="{Binding SaveCommand}"
+                    Content="Сохранить"
+                    Foreground="White" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
